@@ -1,0 +1,50 @@
+---
+title: "滋賀県新型コロナ感染者数データ可視化"
+author: "Aya. U-Ta"
+date: "5/14/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning= F)
+library(DT)
+library(ggplot2)
+library (dplyr)
+load("shigaCOVID.Rdata")
+today<- max(date)
+```
+
+このページは滋賀県の新型コロナ感染者数を可視化するページです。  
+滋賀県公式発表のpdfをもとにしています。表形式である2021/3/26~のデータを処理対象にしています。  
+したがって第４波の立ち上がりから可視化されています。  
+処理にはR言語を用いました。このページもRmarkdownで記述しています。コードや整形済みデータはこちらで公開しています。
+
+
+## データ一覧(2021-3-26~`r today`)
+列名横の三角をクリックするとソートできます。 (デフォルトは患者番号の新しいもの順)   
+検索ボックスで絞り込みが可能です。
+```{r alldata, echo=FALSE}
+datatable(Data2[1:13],rownames = FALSE,
+          colnames = c("例目","公表日", "年代", "性別", "居住地", "職業", "発症日", "医療機関受診日", "陽性確定日", "推定感染経路", "陽性患者接触歴", "クラスター","調査対象"),
+          options = list(order=list(list(0,'desc')))
+  )
+```
+
+
+## 自治体別時系列グラフ
+```{r city, echo=FALSE, fig.width=10, fig.height=10}
+city_time <- Data2 %>%   #dplyrをつかってみる
+  group_by(city, announce) %>%     #announceは発表日
+  tally()                          #集計する
+
+ggplot(data = city_time) +         #キャンバス準備
+  aes(x = announce, y = n) +       
+  geom_bar(stat = "identity") +    # barplotは中身が必要?
+  facet_wrap(~ city) +             # city列に応じてパネル分割
+  labs(x="発表日", y="感染者数")+
+  theme_minimal(base_family = "HiraKakuProN-W3")+
+  scale_x_date(date_breaks = "1 week")+
+  theme(axis.text.x = element_text(angle=45, hjust=1))
+```
+
+
