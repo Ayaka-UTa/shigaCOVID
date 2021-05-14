@@ -1,7 +1,7 @@
 #####
 #xlsxフォルダにおいたファイルを全て読み込んでデータセットをつくる
 #事前にテーブルの数を揃えておく(自動でやってるのでたまに分離している)
-#2021/4/21 cording by Ayaka U. TAKASHIMA
+#2021/4/21 cording by Aya U.Ta.
 #かかった時間(4)
 #####
 setwd("../shigaCOVID")
